@@ -1,0 +1,103 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>UC Chatbot - Chat</title>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <!-- Dialogflow Messenger -->
+    <script src="https://www.gstatic.com/dialogflow-console/fast/messenger/bootstrap.js?v=1"></script>
+    <style>
+        body {
+            background-color: #E00122; /* UC Red */
+            color: #FFFFFF; /* White */
+        }
+        .navbar {
+            background-color: #000000; /* Black */
+        }
+        .navbar-brand {
+            color: #FFFFFF !important;
+        }
+        df-messenger {
+            --df-messenger-bot-message: #000000; /* Bot message background color */
+            --df-messenger-button-titlebar-color: #000000; /* Title bar color */
+            --df-messenger-chat-background-color: #FFFFFF; /* Chat background color */
+            --df-messenger-font-color: #FFFFFF; /* Font color */
+            --df-messenger-send-icon: #E00122; /* Send icon color */
+            --df-messenger-user-message: #E00122; /* User message background color */
+            --df-messenger-user-message-font-color: #FFFFFF; /* User message text color */
+            --df-messenger-bot-message-font-color: #FFFFFF; /* Bot message text color */
+            --df-messenger-input-box-color: #FFFFFF; /* Input box background color */
+            --df-messenger-input-font-color: #000000; /* Input box text color */
+            --df-messenger-input-placeholder-font-color: #666666; /* Input placeholder color */
+        }
+        /* Custom CSS to override message text colors */
+        df-messenger .chat-wrapper .message-list .user-message .message {
+            color: var(--df-messenger-user-message-font-color) !important;
+        }
+        df-messenger .chat-wrapper .message-list .bot-message .message {
+            color: var(--df-messenger-bot-message-font-color) !important;
+        }
+        .container {
+            margin-top: 50px;
+        }
+        h2, p, li {
+            color: #FFFFFF; /* White */
+        }
+        footer {
+            background-color: #000000; /* Black */
+            color: #FFFFFF;
+            padding: 10px;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+        }
+    </style>
+    
+</head>
+<body>
+    <nav class="navbar">
+        <a class="navbar-brand" href="#">University of Cincinnati</a>
+    </nav>
+    <div class="container">
+        <h2 class="text-center">Chat with the UC Chatbot</h2>
+        <p class="text-center">You can ask the following questions:</p>
+        <ul>
+            <li>Does the college have a football team?</li>
+            <li>Does it offer a Computer Science major?</li>
+            <li>What is the in-state tuition?</li>
+            <li>Does it provide on-campus housing?</li>
+
+        </ul>
+        <p class="text-center">"Thank you" to end the conversation</p>
+        <!-- Dialogflow Messenger -->
+        <df-messenger
+            intent="WELCOME"
+            chat-title="UC Chatbot"
+            agent-id="ad272ff0-58ce-490b-b44a-b59dab406bf6"
+            language-code="en"
+        ></df-messenger>
+        <!-- Hidden form to pass user data to conclusion -->
+        <form id="conclusion-form" method="GET" action="/conclusion">
+            <input type="hidden" name="first_name" value="{{ first_name }}">
+            <input type="hidden" name="last_name" value="{{ last_name }}">
+            <input type="hidden" name="email" value="{{ email }}">
+        </form>
+    </div>
+
+    <!-- Script to detect end of conversation -->
+    <script>
+        const dfMessenger = document.querySelector('df-messenger');
+        dfMessenger.addEventListener('df-response-received', function(event) {
+            const messages = event.detail.response.queryResult.fulfillmentText;
+            if (messages.includes('Thank you for chatting')) {
+                document.getElementById('conclusion-form').submit();
+            }
+        });
+    </script>
+    <footer class="text-center">
+        &copy; 2024 University of Cincinnati
+    </footer>
+</body>
+</html>
